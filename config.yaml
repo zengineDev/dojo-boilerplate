@@ -1,0 +1,7 @@
+app:
+  name: "Zengine Dojo Boilerplate"
+  port: 5000
+
+
+view:
+  path: "./views"

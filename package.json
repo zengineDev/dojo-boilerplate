@@ -1,0 +1,17 @@
+{
+  "name": "dojo-boilerplate",
+  "version": "1.0.0",
+  "scripts": {
+    "build-dev": "node build/assets/development.js",
+    "build": "node build/assets/production.js"
+  },
+  "devDependencies": {
+    "@chialab/esbuild-plugin-postcss": "^0.5.7",
+    "autoprefixer": "^10.2.5",
+    "esbuild": "^0.11.18",
+    "esbuild-plugin-postcss2": "^0.0.9",
+    "postcss": "^8.2.13",
+    "react": "^17.0.2",
+    "tailwindcss": "^2.1.2"
+  }
+}
