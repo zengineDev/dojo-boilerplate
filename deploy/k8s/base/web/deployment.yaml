@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  labels:
+    app: web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      restartPolicy: Always
+      containers:
+        - image: web
+          imagePullPolicy: IfNotPresent
+          name: web
+          resources:
+            requests:
+              memory: "256Mi"
+              cpu: "100m"
+            limits:
+              memory: "256Mi"
+              cpu: "150m"
+          livenessProbe:
+            httpGet:
+              path: "/health/live"
+              port: 8000
+            initialDelaySeconds: 15
+            failureThreshold: 3
+            periodSeconds: 3
+          readinessProbe:
+            httpGet:
+              path: "/health/ready"
+              port: 8000
+            initialDelaySeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+            timeoutSeconds: 1
+            periodSeconds: 15
+          ports:
+            - containerPort: 8000
+              protocol: TCP
+          envFrom:
+            - configMapRef:
+                name: configs
+          env:

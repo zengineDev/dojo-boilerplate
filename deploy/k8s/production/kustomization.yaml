@@ -1,0 +1,10 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+images:
+  - name: web
+    newName: ghcr.io/zenginedev/dojo-boilerplate
+    newTag: v0.0.1
+
+resources:
+  - ../base
