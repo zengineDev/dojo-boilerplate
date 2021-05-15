@@ -17,3 +17,10 @@ func main() {
 	app.Serve()
 
 }
+
+func bootstrap() {
+	// register the middleware and the stacks
+
+	// load the routes
+
+}

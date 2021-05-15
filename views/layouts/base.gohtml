@@ -1,5 +1,23 @@
-{{ define "base"}}
-
-    {{template "main" .}}
-
-{{end}}
+{{define "base"}}
+    <!doctype html>
+    <html lang='{{ .Lang }}'>
+    <head>
+        <meta charset='utf-8'>
+        <title>Zengine Dojo</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        {{ range .Assets }}
+            {{ if eq .Extension "css" }}
+                <link href="/assets/main-RSDTK2VW.css" rel="stylesheet">
+            {{end}}
+        {{end}}
+    </head>
+    <body>
+    <main> {{template "main" .}} </main>
+    {{ range .Assets }}
+        {{ if eq .Extension "js" }}
+            <script src="{{ .Path }}" type="application/javascript"></script>
+        {{end}}
+    {{end}}
+    </body>
+    </html>
+{{ end }}
