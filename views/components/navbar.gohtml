@@ -1,0 +1,39 @@
+{{define "navbar"}}
+    <!-- This example requires Tailwind CSS v2.0+ -->
+    <nav class="bg-white shadow">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between h-16">
+                <div class="flex">
+                    <div class="flex-shrink-0 flex items-center">
+                        <img class="block lg:hidden h-8 w-auto"
+                             src="https://tailwindui.com/img/logos/workflow-mark-indigo-600.svg" alt="Workflow">
+                        <img class="hidden lg:block h-8 w-auto"
+                             src="https://tailwindui.com/img/logos/workflow-logo-indigo-600-mark-gray-800-text.svg"
+                             alt="Workflow">
+                    </div>
+                    <div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+                        <!-- Current: "border-indigo-500 text-gray-900", Default: "border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700" -->
+                        <a href="/dashboard"
+                           class="border-indigo-500 text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium">
+                            Dashboard
+                        </a>
+                    </div>
+                </div>
+                <div class="hidden sm:ml-6 sm:flex sm:items-center">
+                    <!-- Profile dropdown -->
+                    {{ if and .User .User.IsGuest }}
+                        <a href="/login" class="relative display-block inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 shadow-sm hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                            <!-- Heroicon name: solid/plus -->
+                            <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                                <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
+                            </svg>
+                            <span>Login</span>
+                        </a>
+                    {{ else }}
+                        <user-dropdown csrf="{{ csrf }}"/>
+                    {{ end }}
+                </div>
+            </div>
+        </div>
+    </nav>
+{{ end }}

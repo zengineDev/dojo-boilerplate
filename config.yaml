@@ -5,6 +5,14 @@ app:
   domain: "http://localhost:5000"
   environment: "development"
 
+db:
+  host: localhost
+  port: "5432"
+  user: christian
+  database: postgres
+  password: ""
+  SSLMode: "disable"
+
 auth:
 
 

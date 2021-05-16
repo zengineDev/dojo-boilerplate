@@ -4,7 +4,7 @@ const postcssPlugin = require('esbuild-plugin-postcss2').default;
 const esbuild = require('esbuild')
 const autoprefixer = require('autoprefixer')
 const tailwind = require('tailwindcss')
-const pluginClear = require('./plugin_clear')
+const fs = require('fs')
 
 esbuild.build({
     platform: 'browser',
@@ -13,7 +13,14 @@ esbuild.build({
     assetNames: 'assets/[name]-[hash]',
     bundle: true,
     plugins: [
-        pluginClear,
+        {
+            name: 'clear',
+            setup(build) {
+                build.onStart(() => {
+                    fs.rm('./assets/dist', { recursive: true }, () =>{});
+                })
+            },
+        },
         postcssPlugin({
             plugins: [autoprefixer, tailwind]
         }),

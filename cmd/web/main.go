@@ -1,6 +1,9 @@
 package main
 
-import "github.com/zengineDev/dojo"
+import (
+	"github.com/zengineDev/dojo"
+	"main/internal/interfaces/web"
+)
 
 func main() {
 
@@ -8,9 +11,10 @@ func main() {
 
 	app := dojo.New(*cfg)
 	// load the config
-	// create an app
+	// load the middleware
+	web.RegisterWebMiddlewares(app)
 	// load the routes
-	ConfigureRoute(app)
+	web.ConfigureWebRoute(app)
 	// load middlwares
 	// load services
 	// start the server

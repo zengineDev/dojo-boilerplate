@@ -1,13 +1,13 @@
 {{define "base"}}
     <!doctype html>
-    <html lang='{{ .Lang }}'>
+    <html lang='en'>
     <head>
         <meta charset='utf-8'>
         <title>Zengine Dojo</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
         {{ range .Assets }}
             {{ if eq .Extension "css" }}
-                <link href="/assets/main-RSDTK2VW.css" rel="stylesheet">
+                <link href="{{ .Path }}" rel="stylesheet">
             {{end}}
         {{end}}
     </head>
