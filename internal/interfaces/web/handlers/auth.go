@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"github.com/zengineDev/dojo"
-	"github.com/zengineDev/dojo/errorsx"
 	"main/internal/domain/services"
+	"net/http"
 )
 
 type AuthHandler struct {
@@ -11,7 +11,13 @@ type AuthHandler struct {
 }
 
 func (h AuthHandler) ShowLoginForm(ctx dojo.Context, app *dojo.Application) error {
-	return app.View(ctx, "auth/login", make(map[string]interface{}))
+	data := make(map[string]interface{})
+	data["Flash"] = ctx.Session().GetFlash("message")
+	old := ctx.Session().GetFlash(dojo.FlashOldKey)
+	if old != nil {
+		data["Old"] = old[0].(map[string]interface{})
+	}
+	return app.View(ctx, "auth/login", data)
 }
 
 type LoginData struct {
@@ -28,7 +34,12 @@ func (h AuthHandler) HandleLoginInAttempt(ctx dojo.Context, app *dojo.Applicatio
 
 	user, err := h.UserService.FindByEmail(ctx, data.Email)
 	if err != nil {
-		return err
+		ctx.Session().Flash("message", "auth.failed")
+		old := make(map[string]interface{})
+		old["Email"] = data.Email
+		ctx.Session().WithOld(old)
+		app.Logger.Warning("email not found")
+		app.Route.Redirect(ctx, "/login")
 	}
 
 	match, err := app.Auth.ComparePasswordAndHash(data.Password, user.Password)
@@ -37,11 +48,13 @@ func (h AuthHandler) HandleLoginInAttempt(ctx dojo.Context, app *dojo.Applicatio
 	}
 
 	if !match {
-		// TODO return the view with same flash
+		ctx.Session().Flash("message", "auth.failed")
+		old := make(map[string]interface{})
+		old["Email"] = data.Email
+		ctx.Session().WithOld(old)
 		app.Logger.Warning("password dont match")
+		app.Route.Redirect(ctx, "/login")
 	}
-
-	app.Logger.Info(user)
 
 	err = app.Auth.Login(ctx, &user)
 	if err != nil {
@@ -56,7 +69,7 @@ func (h AuthHandler) HandleLoginInAttempt(ctx dojo.Context, app *dojo.Applicatio
 func (h *AuthHandler) HandleLogoutAttempt(ctx dojo.Context, app *dojo.Application) error {
 	err := app.Auth.Logout(ctx)
 	if err != nil {
-		return errorsx.BadRequest(err)
+		return dojo.NewHTTPError(http.StatusBadRequest, err.Error())
 	}
 	app.Route.Redirect(ctx, "/")
 	return nil

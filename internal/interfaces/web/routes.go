@@ -18,13 +18,22 @@ func RegisterWebMiddlewares(app *dojo.Application) {
 		CookieMaxAge: 86400,
 	})
 	app.MiddlewareRegistry.Register("csrf", csrf)
+	app.MiddlewareRegistry.Register("auth", middleware.Authentication())
 
 }
 
 func ConfigureWebRoute(app *dojo.Application) {
 	app.Route.Use("csrf")
-	app.Route.Get("/", func(ctx dojo.Context, app *dojo.Application) error {
+
+	app.Route.GetWithName("/","welcome", func(ctx dojo.Context, app *dojo.Application) error {
 		return app.View(ctx, "welcome", make(map[string]interface{}))
+	})
+
+	app.Route.RouteGroup("/dashboard", func(router *dojo.Router) {
+		router.Use("auth")
+		router.GetWithName("/","dashboard", func(ctx dojo.Context, app *dojo.Application) error {
+			return app.View(ctx, "dashboard", make(map[string]interface{}))
+		})
 	})
 
 	httpErrors := middleware.HttpError()
@@ -36,7 +45,7 @@ func ConfigureWebRoute(app *dojo.Application) {
 		UserService: services.NewUserSvc(userStore),
 	}
 
-	app.Route.Get("/login", httpErrors(guestMiddleware(authHandler.ShowLoginForm)))
-	app.Route.Post("/login", httpErrors(authHandler.HandleLoginInAttempt))
+	app.Route.GetWithName("/login","auth.login.show", httpErrors(guestMiddleware(authHandler.ShowLoginForm)))
+	app.Route.PostWithName("/login","auth.login.post", httpErrors(authHandler.HandleLoginInAttempt))
 	app.Route.Post("/logout", httpErrors(authHandler.HandleLogoutAttempt))
 }
